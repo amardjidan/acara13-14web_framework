@@ -1,41 +1,27 @@
 @extends('backend.layouts.template')
 
 @section('content')
-<section id="main-content">
-    <section class="wrapper">
-        <div class="row">
-            <div class="col-lg-12">
-                <h3 class="page-header">
-                    <i class="icon_document_alt"></i> Riwayat Hidup
-                </h3>
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>Riwayat Hidup</h1>
+            <nav>
                 <ol class="breadcrumb">
-                    <li>
-                        <i class="fa fa-home"></i>
-                        <a href="{{ url('dashboard') }}">Home</a>
-                    </li>
-                    <li>
-                        <i class="icon_document_alt"></i> Riwayat Hidup
-                    </li>
-                    <li>
-                        <i class="fa fa-files-o"></i> Pendidikan
-                    </li>
+                    <li class="breadcrumb-item"><a href="{{ url('dashboard') }}">Home</a></li>
+                    <li class="breadcrumb-item">Riwayat Hidup</li>
+                    <li class="breadcrumb-item active">Pendidikan</li>
                 </ol>
-            </div>
-        </div>
+            </nav>
+        </div><!-- End Page Title -->
 
-        <!-- Form Validation -->
-        <div class="row">
-            <div class="col-lg-12">
-                <section class="panel">
-                    <header class="panel-heading">
-                        Pendidikan
-                    </header>
-
-                    <div class="panel-body">
-                        <!-- Menampilkan error validasi -->
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card p-4">
+                        <h5 class="card-title">Pendidikan</h5>
+                        
                         @if ($errors->any())
                             <div class="alert alert-danger">
-                                <strong>Whoops!</strong> Ada beberapa masalah dengan inputan Anda.<br><br>
+                                <strong>Whoops!</strong> Ada beberapa masalah dengan inputan Anda.
                                 <ul>
                                     @foreach ($errors->all() as $error)
                                         <li>{{ $error }}</li>
@@ -44,89 +30,77 @@
                             </div>
                         @endif
 
-                        <!-- Form Input Pendidikan -->
-                        <form class="form-validate form-horizontal" id="pendidikan_form" method="POST"
-                            action="{{ route('pendidikan.store') }}">
+                        <form method="POST" action="{{ isset($pendidikan) ? route('pendidikan.update', $pendidikan->id) : route('pendidikan.store') }}" class="needs-validation" novalidate>
                             @csrf
+                            @if(isset($pendidikan))
+                                @method('PUT')
+                            @endif
 
-                            <div class="form-group">
-                                <label for="nama" class="control-label col-lg-2">
-                                    Nama Sekolah <span class="required">*</span>
-                                </label>
-                                <div class="col-lg-10">
-                                    <input class="form-control" id="nama" name="nama" type="text"
-                                        minlength="5" required>
+                            <div class="row mb-3">
+                                <label for="nama" class="col-md-3 col-form-label">Nama Sekolah</label>
+                                <div class="col-md-9">
+                                    <input type="text" id="nama" name="nama" class="form-control" required minlength="5" 
+                                           value="{{ old('nama', $pendidikan->nama ?? '') }}">
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="tingkatan" class="control-label col-lg-2">
-                                    Tingkatan <span class="required">*</span>
-                                </label>
-                                <div class="col-lg-10">
-                                    <select class="form-control" name="tingkatan" id="tingkatan" required>
-                                        <option value="1">TK</option>
-                                        <option value="2">SD</option>
-                                        <option value="3">SMP</option>
-                                        <option value="4">SMA/SPK</option>
-                                        <option value="5">D3</option>
-                                        <option value="6">D4/S1</option>
+                            <div class="row mb-3">
+                                <label for="tingkatan" class="col-md-3 col-form-label">Tingkatan</label>
+                                <div class="col-md-9">
+                                    <select name="tingkatan" id="tingkatan" class="form-control" required>
+                                        <option value="1" {{ (isset($pendidikan) && $pendidikan->tingkatan == '1') ? 'selected' : '' }}>TK</option>
+                                        <option value="2" {{ (isset($pendidikan) && $pendidikan->tingkatan == '2') ? 'selected' : '' }}>SD</option>
+                                        <option value="3" {{ (isset($pendidikan) && $pendidikan->tingkatan == '3') ? 'selected' : '' }}>SMP</option>
+                                        <option value="4" {{ (isset($pendidikan) && $pendidikan->tingkatan == '4') ? 'selected' : '' }}>SMA/SPK</option>
+                                        <option value="5" {{ (isset($pendidikan) && $pendidikan->tingkatan == '5') ? 'selected' : '' }}>D3</option>
+                                        <option value="6" {{ (isset($pendidikan) && $pendidikan->tingkatan == '6') ? 'selected' : '' }}>D4/S1</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="tahun_masuk" class="control-label col-lg-2">
-                                    Tahun Masuk <span class="required">*</span>
-                                </label>
-                                <div class="col-lg-10">
-                                    <input id="tahun_masuk" name="tahun_masuk" class="form-control"
-                                        type="text" required>
+                            <div class="row mb-3">
+                                <label for="tahun_masuk" class="col-md-3 col-form-label">Tahun Masuk</label>
+                                <div class="col-md-9">
+                                    <input type="text" id="tahun_masuk" name="tahun_masuk" class="form-control" required
+                                           value="{{ old('tahun_masuk', $pendidikan->tahun_masuk ?? '') }}">
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="tahun_keluar" class="control-label col-lg-2">
-                                    Tahun Selesai <span class="required">*</span>
-                                </label>
-                                <div class="col-lg-10">
-                                    <input id="tahun_keluar" name="tahun_keluar" class="form-control"
-                                        type="text" required>
+                            <div class="row mb-3">
+                                <label for="tahun_keluar" class="col-md-3 col-form-label">Tahun Selesai</label>
+                                <div class="col-md-9">
+                                    <input type="text" id="tahun_keluar" name="tahun_keluar" class="form-control" required
+                                           value="{{ old('tahun_keluar', $pendidikan->tahun_keluar ?? '') }}">
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <div class="col-lg-offset-2 col-lg-10">
-                                    <button class="btn btn-primary" type="submit">Save</button>
-                                    <a href="{{ route('pendidikan.index') }}" class="btn btn-default">Cancel</a>
-                                </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">
+                                    {{ isset($pendidikan) ? 'Update' : 'Simpan' }}
+                                </button>
+                                <a href="{{ route('pendidikan.index') }}" class="btn btn-secondary">Batal</a>
                             </div>
                         </form>
                     </div>
-                </section>
+                </div>
             </div>
-        </div>
-    </section>
-</section>
+        </section>
+    </main><!-- End #main -->
 @endsection
 
 @push('content-css')
-<link href="{{ asset('backend/css/bootstrap-datepicker.css') }}" rel="stylesheet" />
+    <link href="{{ asset('backend/css/bootstrap-datepicker.css') }}" rel="stylesheet" />
 @endpush
 
 @push('content-js')
-<script src="{{ asset('backend/js/bootstrap-datepicker.js') }}"></script>
-<script type="text/javascript">
-    $('#tahun_masuk').datepicker({
-        format: "yyyy",
-        viewMode: "years",
-        minViewMode: "years"
-    });
-
-    $('#tahun_keluar').datepicker({
-        format: "yyyy",
-        viewMode: "years",
-        minViewMode: "years"
-    });
-</script>
+    <script src="{{ asset('backend/js/bootstrap-datepicker.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tahun_masuk, #tahun_keluar').datepicker({
+                format: "yyyy",
+                viewMode: "years",
+                minViewMode: "years"
+            });
+        });
+    </script>
 @endpush

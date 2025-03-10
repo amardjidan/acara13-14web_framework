@@ -1,95 +1,80 @@
-@extends('backend/layouts.template')
+@extends('backend.layouts.template')
 
 @section('content')
-    <section id="main-content">
-        <section class="wrapper">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h3 class="page-header"><i class="icon_document_alt"></i> Riwayat Hidup</h3>
-                    <ol class="breadcrumb">
-                        <li><i class="fa fa-home"></i><a href="{{ url('dashboard') }}">Home</a></li>
-                        <li><i class="icon_document_alt"></i>Riwayat Hidup</li>
-                        <li><i class="fa fa-files-o"></i>Pengalaman Kerja</li>
-                    </ol>
-                </div>
-            </div>
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Riwayat Hidup</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url('dashboard') }}">Home</a></li>
+                <li class="breadcrumb-item">Riwayat Hidup</li>
+                <li class="breadcrumb-item active">Pendidikan</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
 
-            <!-- Form validations -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <section class="panel">
-                        <header class="panel-heading">
-                            Pengalaman Kerja
-                        </header>
-                        <div class="panel-body">
-                            @if ($message = Session::get('success'))
-                                <div class="alert alert-success">
-                                    <p>{{ $message }}</p>
-                                </div>
-                            @endif
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Pendidikan</h5>
 
-                            <a href="{{ route('pengalaman_kerja.create') }}">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fa fa-plus"></i> Tambah
-                                </button>
+                        @if(Session::has('success'))
+                            <div class="alert alert-success">{{ Session::get('success') }}</div>
+                        @endif
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <a href="{{ route('pendidikan.create') }}" class="btn btn-primary">
+                                <i class="fa fa-plus"></i> Tambah
                             </a>
                         </div>
-                    </section>
-                </div>
-            </div>
 
-            <!-- Data Table -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <section class="panel">
-                        <div class="panel-body">
-                            <table class="table table-striped table-advance table-hover">
-                                <tbody>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead class="table-dark">
                                     <tr>
-                                        <th><i class="icon_bag"></i> Nama</th>
-                                        <th><i class="icon_document"></i> Jabatan</th>
-                                        <th><i class="icon_calendar"></i> Tahun Masuk</th>
-                                        <th><i class="icon_calendar"></i> Tahun Selesai</th>
-                                        <th><i class="icon_cogs"></i> Action</th>
+                                        <th>No</th>
+                                        <th>Nama</th>
+                                        <th>Tingkatan</th>
+                                        <th>Tahun Masuk</th>
+                                        <th>Tahun Keluar</th>
+                                        <th>Aksi</th>
                                     </tr>
-                                    @foreach ($pengalaman_kerja as $item)
+                                </thead>
+                                <tbody>
+                                    @foreach($pendidikan as $item)
                                         <tr>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->nama }}</td>
-                                            <td>{{ $item->jabatan }}</td>
+                                            <td>{{ $item->tingkatan }}</td>
                                             <td>{{ $item->tahun_masuk }}</td>
-                                            <td>{{ $item->tahun_keluar }}</td>
+                                            <td>{{ $item->tahun_keluar ?? '-' }}</td>
                                             <td>
-                                                <div class="btn-group">
-                                                    <form action="{{ route('pengalaman_kerja.destroy', $item->id) }}"
-                                                        method="POST">
-                                                        <!-- Tombol Edit -->
-                                                        <a class="btn btn-warning"
-                                                            href="{{ route('pengalaman_kerja.edit', $item->id) }}">
-                                                            <i class="fa fa-edit"></i>
-                                                        </a>
-
-                                                        @csrf
-                                                        @method('DELETE')
-
-                                                        <!-- Tombol Hapus -->
-                                                        <button type="submit" class="btn btn-danger"
-                                                            onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
-                                                            <i class="fa fa-trash-o"></i>
-                                                        </button>
-                                                    </form>
+                                                <div class="btn-group" role="group">
+                                                     <!-- Tombol Edit -->
+                                                <a class="btn btn-warning" href="{{ route('pendidikan.edit', $item->id) }}">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                      <!-- Tombol Hapus -->
+                                                <form action="{{ route('pendidikan.destroy', $item->id) }}" method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
                                                 </div>
-
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                         </div>
-                    </section>
+                    </div>
                 </div>
             </div>
-            <!-- page end -->
-        </section>
+        </div>
     </section>
+</main>
 @endsection
-x
